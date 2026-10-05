@@ -1,0 +1,17 @@
+__pycache__/
+_temp_audio/
+_temp_combined/
+_temp_frames/
+faster-whisper-small/
+output/
+sessions/
+source_docs/
+test_video/
+rcm_packages/
+*.exe
+*.mp4
+*.webm
+*.wav
+users.json
+.env
+.streamlit/secrets.toml

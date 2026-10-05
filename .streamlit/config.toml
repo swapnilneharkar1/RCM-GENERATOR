@@ -1,0 +1,10 @@
+[browser]
+gatherUsageStats = false
+
+[server]
+headless = true
+address = "0.0.0.0"
+port = 8501
+# Default Streamlit cap is 200 (MB). Raised here to allow larger walkthrough
+# videos. Value is in megabytes - adjust as needed (e.g. 5000 = 5GB).
+maxUploadSize = 2000

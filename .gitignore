@@ -15,3 +15,4 @@ rcm_packages/
 users.json
 .env
 .streamlit/secrets.toml
+faster-whisper-small/

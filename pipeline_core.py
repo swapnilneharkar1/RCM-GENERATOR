@@ -31,6 +31,27 @@ def config_is_ready() -> bool:
     return bool(key) and "PASTE-YOUR-AZURE-KEY-HERE" not in key and bool(endpoint)
 
 
+def _resolve_whisper_model_source() -> str:
+    """
+    Decide where to load the Whisper model from:
+      1) the path configured in combined_video_transcript.py (if that folder exists)
+      2) the local 'faster-whisper-small' folder next to this file (if it exists)
+      3) otherwise the model name 'small' - faster-whisper downloads it
+         automatically (used on Streamlit Cloud, which has internet access).
+    """
+    configured = Path(getattr(vid_mod, "WHISPER_MODEL_PATH", "faster-whisper-small"))
+    if not configured.is_absolute():
+        configured = Path(vid_mod.BASE_DIR) / configured
+    if configured.exists():
+        return str(configured)
+
+    local_dir = Path(__file__).parent / "faster-whisper-small"
+    if local_dir.exists():
+        return str(local_dir)
+
+    return "small"
+
+
 def get_whisper_model():
     """Loaded once per server process (not once per job) and reused - this
     is the slow part (reading the model into memory), so we don't want to
@@ -40,15 +61,8 @@ def get_whisper_model():
         if _whisper_model is None:
             from faster_whisper import WhisperModel
 
-            model_path = Path(vid_mod.WHISPER_MODEL_PATH)
-            if not model_path.is_absolute():
-                model_path = vid_mod.BASE_DIR / model_path
-            if not model_path.exists():
-                raise FileNotFoundError(
-                    f"Whisper model folder not found at '{model_path}'. See the "
-                    f"setup instructions at the top of combined_video_transcript.py."
-                )
-            _whisper_model = WhisperModel(str(model_path), device="cpu", compute_type="int8")
+            model_source = _resolve_whisper_model_source()
+            _whisper_model = WhisperModel(model_source, device="cpu", compute_type="int8")
     return _whisper_model
 
 

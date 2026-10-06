@@ -1,35 +1,20 @@
 """
 auth.py - simple per-user login for the RCM Generator Streamlit app.
 
-Why this instead of a pip package (streamlit-authenticator, bcrypt, etc.):
-Your server has no open internet access, and every extra dependency means
-another offline wheel-download-and-transfer round trip (same as you already
-did for faster-whisper). This uses ONLY Python's standard library
-(hashlib + secrets), so the only new package you need to get onto the server
-for the whole interface is Streamlit itself.
+Users are read from:
+  1) users.json next to this file (local PC / server), or
+  2) Streamlit Secrets under [users."<name>"] (Streamlit Cloud).
 
-How accounts are stored:
-    users.json (next to this file) - one entry per user:
-        {
-          "swapnil": {"salt": "<hex>", "hash": "<hex>", "display_name": "Swapnil"}
-        }
-    Passwords are never stored in plain text - PBKDF2-HMAC-SHA256 with a
-    random 16-byte salt per user, 200,000 iterations (OWASP-recommended
-    minimum as of 2023+ guidance).
+Passwords are never stored in plain text - PBKDF2-HMAC-SHA256 with a
+random 16-byte salt per user, 200,000 iterations.
 
-Adding/removing users:
-    Use create_user.py (run on the server, no internet needed):
-        python create_user.py add swapnil "Swapnil"
-        python create_user.py remove swapnil
-        python create_user.py list
+Adding/removing users (on your PC):
+    python create_user.py add swapnil "Swapnil"
+    python create_user.py remove swapnil
+    python create_user.py list
 
-Usage in app.py:
-    import auth
-    user = auth.login_gate()   # shows a login form, halts the script (st.stop())
-                                # until a valid login happens; returns the
-                                # logged-in username once authenticated.
-    ...
-    auth.logout_button()       # put in the sidebar
+Export users for Streamlit Secrets:
+    python -c "import auth; auth.export_secrets_toml()"
 """
 
 import hashlib
@@ -114,7 +99,7 @@ def list_users() -> list:
 
 def authenticate(username: str, password: str) -> bool:
     users = _load_users()
-    entry = users.get(username)
+    entry = users.get(username.strip())
     if not entry:
         return False
     return verify_password(password, entry["salt"], entry["hash"])
@@ -124,19 +109,17 @@ def login_gate() -> str:
     """
     Renders a login form if the user isn't authenticated yet, and calls
     st.stop() so the rest of the page doesn't render until they log in.
-    Returns the logged-in username when authentication has succeeded
-    (on this call or a previous one in the same browser session).
+    Returns the logged-in username once authenticated.
     """
     if st.session_state.get("authenticated_user"):
         return st.session_state["authenticated_user"]
 
     st.title("RCM Generator - Sign in")
 
-        if not _load_users():
+    if not _load_users():
         st.warning(
-            "No user accounts have been set up yet. Ask your admin to run:\n\n"
-            "`python create_user.py add <username> \"<Display Name>\"`\n\n"
-            "on the server to create the first account."
+            "No user accounts have been set up yet. Ask your admin to add "
+            "users (users.json locally, or Streamlit Secrets on the cloud)."
         )
         st.stop()
 
@@ -147,7 +130,7 @@ def login_gate() -> str:
 
     if submitted:
         if authenticate(username, password):
-            st.session_state["authenticated_user"] = username
+            st.session_state["authenticated_user"] = username.strip()
             st.rerun()
         else:
             st.error("Incorrect username or password.")

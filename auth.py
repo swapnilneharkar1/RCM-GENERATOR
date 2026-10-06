@@ -47,12 +47,27 @@ PBKDF2_ITERATIONS = 200_000
 
 
 def _load_users() -> dict:
-    if not USERS_FILE.exists():
-        return {}
+    # 1) Local / server: use users.json if it exists
+    if USERS_FILE.exists():
+        try:
+            return json.loads(USERS_FILE.read_text(encoding="utf-8"))
+        except (json.JSONDecodeError, OSError):
+            return {}
+    # 2) Streamlit Cloud: read users from Secrets
     try:
-        return json.loads(USERS_FILE.read_text(encoding="utf-8"))
-    except (json.JSONDecodeError, OSError):
+        return {name: dict(info) for name, info in st.secrets["users"].items()}
+    except Exception:
         return {}
+
+
+def export_secrets_toml():
+    """Print users.json in the format to paste into Streamlit Secrets."""
+    for name, info in _load_users().items():
+        print(f'[users."{name}"]')
+        print(f'salt = "{info["salt"]}"')
+        print(f'hash = "{info["hash"]}"')
+        print(f'display_name = "{info.get("display_name", name)}"')
+        print()
 
 
 def _save_users(users: dict):

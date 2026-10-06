@@ -2,7 +2,7 @@ __pycache__/
 _temp_audio/
 _temp_combined/
 _temp_frames/
-faster-whisper-small/
+small/
 output/
 sessions/
 source_docs/

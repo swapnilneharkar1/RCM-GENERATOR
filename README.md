@@ -95,7 +95,7 @@ different treatment.
 1. **Get ffmpeg onto the server.** It's not a pip package - it's a
    standalone executable. On your internet-connected machine, download the
    "essentials" Windows build from https://www.gyan.dev/ffmpeg/builds/
-   (a `.zip`), extract it, and copy `ffmpeg.exe` and `ffprobe.exe` from its
+   (a `.zip`), extract it, and copy `small` and `ffprobe.exe` from its
    `bin` folder into your `rcm_generator` project folder on the server (or
    anywhere, then set `FFMPEG_PATH`/`FFPROBE_PATH` at the top of
    `transcribe_videos.py` to the full path).

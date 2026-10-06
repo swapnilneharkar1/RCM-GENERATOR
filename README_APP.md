@@ -98,7 +98,7 @@ folder.
 
 - Needs `ffmpeg`/`ffprobe` on the server (same requirement as
   `combined_video_transcript.py` already has).
-- Needs the `faster-whisper-small` (or whichever size you set up) model
+- Needs the `small` (or whichever size you set up) model
   folder present, same as before - the app reuses
   `combined_video_transcript.WHISPER_MODEL_PATH`.
 - Needs `config.py` filled in with a working Azure OpenAI key/endpoint/

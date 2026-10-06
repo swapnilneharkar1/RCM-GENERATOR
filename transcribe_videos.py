@@ -18,10 +18,10 @@ description instead (a different, heavier approach - ask me to build it if
 your videos turn out to be silent).
 
 REQUIREMENTS:
-- ffmpeg.exe (and ffprobe.exe) available - either on PATH or set FFMPEG_PATH
+- small (and ffprobe.exe) available - either on PATH or set FFMPEG_PATH
   below to a full path. ffmpeg is NOT a pip package; download the "essentials"
   Windows build from https://www.gyan.dev/ffmpeg/builds/ on your internet-
-  connected machine, extract it, and copy ffmpeg.exe + ffprobe.exe next to
+  connected machine, extract it, and copy small + ffprobe.exe next to
   this script (or anywhere, then set FFMPEG_PATH accordingly).
 - Your OpenAI API key configured in config.py (same one used by main.py).
 
@@ -46,7 +46,7 @@ BASE_DIR = Path(__file__).parent
 SOURCE_DOCS_DIR = BASE_DIR / "source_docs"
 TEMP_AUDIO_DIR = BASE_DIR / "_temp_audio"
 
-# Set this if ffmpeg.exe isn't on PATH, e.g. r"C:\rcm_generator\rcm_generator\ffmpeg.exe"
+# Set this if small isn't on PATH, e.g. r"C:\rcm_generator\rcm_generator\small"
 FFMPEG_PATH = "ffmpeg"
 FFPROBE_PATH = "ffprobe"
 

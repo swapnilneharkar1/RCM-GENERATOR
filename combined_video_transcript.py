@@ -24,11 +24,11 @@ SETUP (one-time, on your internet-connected machine):
 2. Download a model - recommended starting point is the "small" multilingual
    model (~250MB, decent Hindi/English quality, reasonable CPU speed):
 
-   python -c "from huggingface_hub import snapshot_download; print(snapshot_download('Systran/faster-whisper-small'))"
+   python -c "from huggingface_hub import snapshot_download; print(snapshot_download('Systran/small'))"
 
    This prints a local folder path when done (usually somewhere under your
    user's .cache folder). Copy that WHOLE FOLDER to the server, into this
-   project directory, e.g. rcm_generator/faster-whisper-small/
+   project directory, e.g. rcm_generator/small/
 3. On the server: pip install faster-whisper (offline, via your usual
    pip-download-then-transfer workflow - this pulls in ctranslate2,
    tokenizers, onnxruntime as dependencies, so download ALL of those too:
@@ -63,7 +63,7 @@ TEMP_DIR = BASE_DIR / "_temp_combined"
 
 # Must match a real folder you've downloaded and copied over - see setup
 # instructions above.
-WHISPER_MODEL_PATH = "faster-whisper-small"
+WHISPER_MODEL_PATH = "small"
 
 # Set to True to have Whisper translate everything directly to English as
 # it transcribes (Hindi speech -> English text, English speech stays

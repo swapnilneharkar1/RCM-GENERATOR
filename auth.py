@@ -132,7 +132,7 @@ def login_gate() -> str:
 
     st.title("RCM Generator - Sign in")
 
-        if not _load_users()::
+        if not _load_users():
         st.warning(
             "No user accounts have been set up yet. Ask your admin to run:\n\n"
             "`python create_user.py add <username> \"<Display Name>\"`\n\n"
